@@ -66,7 +66,17 @@ public:
     // Called when a unit deals damage to another unit
     virtual void OnDamage(Unit * /*attacker*/, Unit * /*victim*/, uint32 & /*damage*/) {}
 
-    virtual void OnDamageWithSpell(Unit *attacker, Unit *victim, uint32 damage, SpellInfo const *spellInfo, SpellSchoolMask schoolMask, DamageEffectType damageType) {}
+    // Jadewong 2025-09-20
+    virtual void OnDamageWithSpell(
+        Unit *attacker,                     // 攻击者（施法者）
+        Unit *victim,                       // 受害者
+        uint32 &damage,                     // 引用：允许修改伤害值
+        SpellInfo const *spellInfo,         // 法术信息
+        SpellSchoolMask schoolMask,         // 法术学派掩码
+        DamageEffectType damageType,        // 伤害效果类型
+        Spell const *damageSpell = nullptr) // 法术实例（可选）
+    {
+    }
 
     // Called when DoT's Tick Damage is being Dealt
     // Attacker can be nullptr if he is despawned while the aura still exists on target

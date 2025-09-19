@@ -839,7 +839,7 @@ uint32 Unit::DealDamage(Unit *attacker, Unit *victim, uint32 damage, CleanDamage
     // >>>>>>>>>> 添加新钩子 <<<<<<<<<<
     if (spellProto) // 只有是技能伤害时才触发
     {
-        sScriptMgr->OnDamageWithSpell(attacker, victim, damage, spellProto, damageSchoolMask, damagetype);
+        sScriptMgr->OnDamageWithSpell(attacker, victim, damage, spellProto, damageSchoolMask, damagetype, damageSpell);
     }
     // <<<<<<<<<< 添加结束 >>>>>>>>>>
 
