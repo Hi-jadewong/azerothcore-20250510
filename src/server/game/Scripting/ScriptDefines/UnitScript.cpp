@@ -19,14 +19,22 @@
 #include "ScriptMgr.h"
 #include "ScriptMgrMacros.h"
 
-void ScriptMgr::OnHeal(Unit* healer, Unit* reciever, uint32& gain)
+void ScriptMgr::OnHeal(Unit *healer, Unit *reciever, uint32 &gain)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_HEAL, script->OnHeal(healer, reciever, gain));
 }
 
-void ScriptMgr::OnDamage(Unit* attacker, Unit* victim, uint32& damage)
+void ScriptMgr::OnDamage(Unit *attacker, Unit *victim, uint32 &damage)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE, script->OnDamage(attacker, victim, damage));
+}
+
+// OnDamageWithSpell
+// JadeWong
+// 2025-09-20
+void ScriptMgr::OnDamageWithSpell(Unit* attacker,Unit* victim,uint32 damage,  // 注意：这里不需要引用，因为你不修改 damageSpellInfo const* spellInfo,SpellSchoolMask schoolMask,DamageEffectType damageType)
+{
+    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE_WITH_SPELL, script->OnDamageWithSpell(attacker, victim, damage, spellInfo, schoolMask, damageType));
 }
 
 void ScriptMgr::ModifyPeriodicDamageAurasTick(Unit* target, Unit* attacker, uint32& damage, SpellInfo const* spellInfo)
@@ -56,7 +64,7 @@ uint32 ScriptMgr::DealDamage(Unit* AttackerUnit, Unit* pVictim, uint32 damage, D
         return damage;
     }
 
-    for (auto const& [scriptID, script] : ScriptRegistry<UnitScript>::ScriptPointerList)
+    for (auto const &[scriptID, script] : ScriptRegistry<UnitScript>::ScriptPointerList)
     {
         damage = script->DealDamage(AttackerUnit, pVictim, damage, damagetype);
     }
