@@ -67,14 +67,22 @@ public:
     virtual void OnDamage(Unit * /*attacker*/, Unit * /*victim*/, uint32 & /*damage*/) {}
 
     // Jadewong 2025-09-20
+    // Called when a unit deals spell damage to another unit
+    // @param attacker: The unit casting the spell
+    // @param victim: The unit receiving damage
+    // @param damage: The damage amount (can be modified)
+    // @param spellInfo: SpellInfo of the spell
+    // @param schoolMask: Damage school (e.g., FIRE, FROST)
+    // @param damageType: Type of damage effect (e.g., DIRECT_DAMAGE)
+    // @param damageSpell: Optional Spell instance
     virtual void OnDamageWithSpell(
-        Unit *attacker,                     // 攻击者（施法者）
-        Unit *victim,                       // 受害者
-        uint32 &damage,                     // 引用：允许修改伤害值
-        SpellInfo const *spellInfo,         // 法术信息
-        SpellSchoolMask schoolMask,         // 法术学派掩码
-        DamageEffectType damageType,        // 伤害效果类型
-        Spell const *damageSpell = nullptr) // 法术实例（可选）
+        Unit * /*attacker*/,
+        Unit * /*victim*/,
+        uint32 & /*damage*/,
+        SpellInfo const * /*spellInfo*/,
+        SpellSchoolMask /*schoolMask*/,
+        DamageEffectType /*damageType*/,
+        Spell const * /*damageSpell*/ = nullptr)
     {
     }
 
