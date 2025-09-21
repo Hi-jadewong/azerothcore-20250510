@@ -32,11 +32,16 @@ void ScriptMgr::OnDamage(Unit *attacker, Unit *victim, uint32 &damage)
 // OnDamageWithSpell
 // JadeWong
 // 2025-09-20
-void ScriptMgr::OnDamageWithSpell(Unit *attacker, Unit *victim, uint32 &damage, SpellInfo const *spellInfo, SpellSchoolMask schoolMask, DamageEffectType damageType, Spell const *damageSpell)
+void ScriptMgr::OnDamageWithSpell(Unit *attacker, Unit *victim, uint32 &damage,
+                                  SpellInfo const *spellInfo, SpellSchoolMask schoolMask,
+                                  DamageEffectType damageType, Spell const *damageSpell,
+                                  bool isCritical) // ← 添加参数
 {
-    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE_WITH_SPELL, script->OnDamageWithSpell(attacker, victim, damage, spellInfo, schoolMask, damageType, damageSpell));
+    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE_WITH_SPELL,
+                       script->OnDamageWithSpell(attacker, victim, damage, spellInfo, schoolMask,
+                                                 damageType, damageSpell, isCritical));
 }
-
+// 结束
 void ScriptMgr::ModifyPeriodicDamageAurasTick(Unit *target, Unit *attacker, uint32 &damage, SpellInfo const *spellInfo)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_MODIFY_PERIODIC_DAMAGE_AURAS_TICK, script->ModifyPeriodicDamageAurasTick(target, attacker, damage, spellInfo));
@@ -50,6 +55,15 @@ void ScriptMgr::ModifyMeleeDamage(Unit *target, Unit *attacker, uint32 &damage)
 void ScriptMgr::ModifySpellDamageTaken(Unit *target, Unit *attacker, int32 &damage, SpellInfo const *spellInfo)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_MODIFY_SPELL_DAMAGE_TAKEN, script->ModifySpellDamageTaken(target, attacker, damage, spellInfo));
+}
+// OnSpellHit
+// JadeWong
+// 2025-09-21
+void ScriptMgr::OnSpellHit(Unit *attacker, Unit *victim, uint32 damage,
+                           uint32 spellId, bool isCritical, SpellSchoolMask schoolMask)
+{
+    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_SPELL_HIT,
+                       script->OnSpellHit(attacker, victim, damage, spellId, isCritical, schoolMask));
 }
 
 void ScriptMgr::ModifyHealReceived(Unit *target, Unit *healer, uint32 &heal, SpellInfo const *spellInfo)
