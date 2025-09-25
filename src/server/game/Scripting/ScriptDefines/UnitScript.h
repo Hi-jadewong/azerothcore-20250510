@@ -25,8 +25,7 @@ enum UnitHook
 {
     UNITHOOK_ON_HEAL,
     UNITHOOK_ON_DAMAGE,
-    UNITHOOK_ON_DAMAGE_WITH_SPELL, // 将会被删除，这个法术命中事件，无法检查暴击
-    UNITHOOK_ON_SPELL_HIT,         // 法术命中事件，包含伤害和是否暴击参数
+    UNITHOOK_ON_DAMAGE_WITH_SPELL,
     UNITHOOK_MODIFY_PERIODIC_DAMAGE_AURAS_TICK,
     UNITHOOK_MODIFY_MELEE_DAMAGE,
     UNITHOOK_MODIFY_SPELL_DAMAGE_TAKEN,
@@ -67,35 +66,11 @@ public:
     // Called when a unit deals damage to another unit
     virtual void OnDamage(Unit * /*attacker*/, Unit * /*victim*/, uint32 & /*damage*/) {}
 
-    // Jadewong 2025-09-20
+    // 开始
+    // Jadewong
     // Called when a unit deals spell damage to another unit
-    // @param attacker: The unit casting the spell
-    // @param victim: The unit receiving damage
-    // @param damage: The damage amount (can be modified)
-    // @param spellInfo: SpellInfo of the spell
-    // @param schoolMask: Damage school (e.g., FIRE, FROST)
-    // @param damageType: Type of damage effect (e.g., DIRECT_DAMAGE)
-    // @param damageSpell: Optional Spell instance
-    virtual void OnDamageWithSpell(
-        Unit *attacker,
-        Unit *victim,
-        uint32 &damage,
-        SpellInfo const *spellInfo,
-        SpellSchoolMask schoolMask,
-        DamageEffectType damageType,
-        Spell const *damageSpell = nullptr,
-        bool isCritical = false)
-    {
-        (void)attacker;
-        (void)victim;
-        (void)damage;
-        (void)spellInfo;
-        (void)schoolMask;
-        (void)damageType;
-        (void)damageSpell;
-        (void)isCritical;
-    }
-
+    virtual void OnDamageWithSpell(Unit * /*attacker*/, Unit * /*victim*/, uint32 & /*damage*/, SpellInfo const * /*spellInfo*/, bool /*isCritical*/) {}
+    // 结束
     // Called when DoT's Tick Damage is being Dealt
     // Attacker can be nullptr if he is despawned while the aura still exists on target
     virtual void ModifyPeriodicDamageAurasTick(Unit * /*target*/, Unit * /*attacker*/, uint32 & /*damage*/, SpellInfo const * /*spellInfo*/) {}
@@ -106,16 +81,6 @@ public:
     // Called when Spell Damage is being Dealt
     virtual void ModifySpellDamageTaken(Unit * /*target*/, Unit * /*attacker*/, int32 & /*damage*/, SpellInfo const * /*spellInfo*/) {}
 
-    // Jadewong 2025-09-20
-    // Called when a spell hits a target (both critical and normal hits)
-    // @param attacker: Unit casting the spell
-    // @param victim: Unit being hit by the spell
-    // @param damage: Damage amount (read-only)
-    // @param spellId: ID of the spell that hit
-    // @param isCritical: Whether the hit was critical
-    // @param schoolMask: School mask of the spell damage
-    virtual void OnSpellHit(Unit * /*attacker*/, Unit * /*victim*/, uint32 /*damage*/,
-                            uint32 /*spellId*/, bool /*isCritical*/, SpellSchoolMask /*schoolMask*/) {}
     // Called when Heal is Recieved
     virtual void ModifyHealReceived(Unit * /*target*/, Unit * /*healer*/, uint32 & /*heal*/, SpellInfo const * /*spellInfo*/) {}
 

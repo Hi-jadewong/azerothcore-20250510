@@ -28,18 +28,14 @@ void ScriptMgr::OnDamage(Unit *attacker, Unit *victim, uint32 &damage)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE, script->OnDamage(attacker, victim, damage));
 }
-
-// OnDamageWithSpell
+// 开始
 // JadeWong
+// OnDamageWithSpell
 // 2025-09-20
-void ScriptMgr::OnDamageWithSpell(Unit *attacker, Unit *victim, uint32 &damage,
-                                  SpellInfo const *spellInfo, SpellSchoolMask schoolMask,
-                                  DamageEffectType damageType, Spell const *damageSpell,
-                                  bool isCritical) // ← 添加参数
+void ScriptMgr::OnDamageWithSpell(Unit *attacker, Unit *victim, uint32 &damage, SpellInfo const *spellInfo, bool isCritical) // ← 添加参数
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_DAMAGE_WITH_SPELL,
-                       script->OnDamageWithSpell(attacker, victim, damage, spellInfo, schoolMask,
-                                                 damageType, damageSpell, isCritical));
+                       script->OnDamageWithSpell(attacker, victim, damage, spellInfo, isCritical));
 }
 // 结束
 void ScriptMgr::ModifyPeriodicDamageAurasTick(Unit *target, Unit *attacker, uint32 &damage, SpellInfo const *spellInfo)
@@ -55,15 +51,6 @@ void ScriptMgr::ModifyMeleeDamage(Unit *target, Unit *attacker, uint32 &damage)
 void ScriptMgr::ModifySpellDamageTaken(Unit *target, Unit *attacker, int32 &damage, SpellInfo const *spellInfo)
 {
     CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_MODIFY_SPELL_DAMAGE_TAKEN, script->ModifySpellDamageTaken(target, attacker, damage, spellInfo));
-}
-// OnSpellHit
-// JadeWong
-// 2025-09-21
-void ScriptMgr::OnSpellHit(Unit *attacker, Unit *victim, uint32 damage,
-                           uint32 spellId, bool isCritical, SpellSchoolMask schoolMask)
-{
-    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_ON_SPELL_HIT,
-                       script->OnSpellHit(attacker, victim, damage, spellId, isCritical, schoolMask));
 }
 
 void ScriptMgr::ModifyHealReceived(Unit *target, Unit *healer, uint32 &heal, SpellInfo const *spellInfo)

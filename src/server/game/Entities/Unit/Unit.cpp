@@ -836,38 +836,6 @@ uint32 Unit::DealDamage(Unit *attacker, Unit *victim, uint32 damage, CleanDamage
     // Hook for OnDamage Event
     sScriptMgr->OnDamage(attacker, victim, damage);
 
-    // Jadewong 2025-09-20
-    // Hook for OnDamageWithSpell Event
-    // >>>>>>>>>> 添加新钩子 <<<<<<<<<<
-    if (spellProto)
-    {
-        bool isCritical = false;
-
-        if (damageSpell)
-        {
-            // 使用 const 版本的方法
-            const auto &targetInfos = damageSpell->GetUniqueTargetInfo();
-            for (const auto &targetInfo : targetInfos)
-            {
-                if (targetInfo.targetGUID == victim->GetGUID())
-                {
-                    isCritical = targetInfo.crit;
-
-                    // 调试信息
-                    LOG_INFO("entities.unit", "目标: {}, 暴击: {}, Miss条件: {}",
-                             targetInfo.targetGUID.ToString(),
-                             targetInfo.crit ? "是" : "否",
-                             targetInfo.missCondition);
-                    break;
-                }
-            }
-        }
-
-        sScriptMgr->OnDamageWithSpell(attacker, victim, damage, spellProto,
-                                      damageSchoolMask, damagetype, damageSpell, isCritical);
-    }
-    // <<<<<<<<<< 添加结束 >>>>>>>>>>
-
     if (victim->IsPlayer() && attacker != victim)
     {
         // Signal to pets that their owner was attacked
@@ -1361,19 +1329,6 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
     // Script Hook For CalculateSpellDamageTaken -- Allow scripts to change the Damage post class mitigation calculations
     sScriptMgr->ModifySpellDamageTaken(damageInfo->target, damageInfo->attacker, damage, spellInfo);
 
-    // Jadewong 2025-09-21
-    // Hook for when a spell hits a target (both normal and critical hits)
-    if (spellInfo && damageInfo->attacker && damageInfo->attacker->IsPlayer()) // 确保是法术伤害 && 攻击者是player
-    {
-        sScriptMgr->OnSpellHit(damageInfo->attacker,
-                               damageInfo->target,
-                               damage,
-                               spellInfo->Id,
-                               crit,
-                               damageSchoolMask);
-    }
-    // 结束
-
     if (victim->GetAI())
     {
         victim->GetAI()->OnCalculateSpellDamageReceived(damage, this);
@@ -1499,6 +1454,23 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
         damageInfo->absorb = dmgInfo.GetAbsorb();
         damageInfo->resist = dmgInfo.GetResist();
         damageInfo->damage = dmgInfo.GetDamage();
+    }
+
+    // 钩子
+    if (damageInfo->attacker && damageInfo->attacker->IsPlayer())
+    {
+        // 将 int32 转换为 uint32
+        uint32 finalDamage = damage > 0 ? static_cast<uint32>(damage) : 0;
+
+        sScriptMgr->OnDamageWithSpell(
+            damageInfo->attacker,
+            damageInfo->target,
+            finalDamage, // 使用转换后的 uint32
+            spellInfo,
+            crit);
+
+        // 如果钩子可能修改伤害值，需要传回
+        // damageInfo->damage = static_cast<int32>(finalDamage);
     }
 }
 
